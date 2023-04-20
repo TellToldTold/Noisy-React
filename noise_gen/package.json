@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "description": "",
-  "main": "noise_gen.js",
+  "main": "combine_edges.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
