@@ -1,17 +1,21 @@
 import styles from '@/styles/Home.module.css'
 import {useEffect, useRef, useState} from "react";
 
-const pixelSize = 2;
-const pixelAcc = 0.05 / 255;
-const vMax = 0.65;
-const changeMapTimer = 1000;
-const pixelCounts = [3000,1000,100,1000,4000];
-const colors = ['rgb(171,130,180)', 'rgb(176,144,196)', 'rgb(133,185,204)',
-    'rgb(113,174,197)', 'rgb(155,230,250)'];
+const genRadius = 0.25;         // fraction of the screen minimum Dimension where the particles are generated
+const changeMapTimer = 700;
+const pixelSizes = [1.9, 1.925, 1.95, 1.975, 2];
+const pixelAccs = [0.000026, 0.000027, 0.000028, 0.000029, 0.00003];
+const vMaxs = [1.3, 1.35, 1.4, 1.45, 1.5];
+const pixelCounts = [3500,4000,2000,3500,5500];
+const colors = ['rgba(199,155,185,0.92)', 'rgba(220,180,215,0.91)', 'rgba(156,234,245,0.93)',
+    'rgba(165,224,246,0.95)', 'rgb(161,233,255)'];
 
 const PI255 = 0.8117;
 var width;
 var height;
+var minDim;
+var radiusGeneration;
+var lastTime = 0;
 const sinTable = [];
 var ctxImg;
 const ctxs = [];
@@ -24,8 +28,10 @@ export default function Home() {
     const canvas3 = useRef(null);
     const canvas4 = useRef(null);
     const canvas5 = useRef(null);
-    const [maps, setMaps] = useState([]);
     const counter = useRef(0);
+    const [maps, setMaps] = useState([]);
+    const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         for (let angle = -Math.PI / 2; angle <= Math.PI / 2; angle += 0.01) {
@@ -35,6 +41,8 @@ export default function Home() {
         ctxImg = canvasImg.current.getContext('2d');
         width = window.innerWidth;
         height = window.innerHeight;
+        minDim = Math.min(width, height);
+        radiusGeneration = minDim * genRadius;
         canvasImg.current.width = width;
         canvasImg.current.height = height;
         canvas1.current.width = width;
@@ -69,7 +77,7 @@ export default function Home() {
         async function loadMaps() {
             //const mapNames = ['map1.png', 'map12.png', 'map2.png', 'map23.png', 'map3.png', 'map34.png', 'map4.png', 'map41.png'];
             //const mapNames = ['1.png', '12.png', '2.png', '23.png', '3.png', '34.png', '4.png', '41.png'];
-            const mapNames = ['a.png', 'ab.png', 'b.png', 'bc.png', 'c.png', 'cd.png', 'd.png', 'de.png', 'e.png', 'ef.png', 'f.png', 'fg.png', 'g.png', 'ga.png'];
+            const mapNames = ['a.png', 'aab.png', 'ab.png', 'abb.png', 'b.png', 'bbc.png', 'bc.png', 'bcc.png', 'c.png', 'ccd.png', 'cd.png', 'cdd.png', 'd.png',  'dde.png', 'de.png', 'dee.png', 'e.png', 'eef.png', 'ef.png', 'eff.png', 'f.png', 'ffg.png', 'fg.png', 'fgg.png', 'g.png', 'gga.png', 'ga.png', 'gaa.png'];
             const promises = mapNames.map(name => loadImage(`./noiseMaps/${name}`));
             await Promise.all(promises);
             setMaps(mps);
@@ -91,8 +99,13 @@ export default function Home() {
             for (let j = 0; j < 5; j++) {
                 pixels.push([]);
                 for (let i = 0; i < pixelCounts[j]; i++) {
-                    let x = Math.floor(Math.random() * width);
-                    let y = Math.floor(Math.random() * height);
+                    let x = 0;
+                    let y = 0;
+                    do {
+                        x = width/2 - radiusGeneration + Math.floor(Math.random() * 2 * radiusGeneration);
+                        y = height/2 -  radiusGeneration + Math.floor(Math.random() * 2 * radiusGeneration);
+                    } while (Math.hypot(x - width/2, y - height/2) >  radiusGeneration);
+
                     pixels[j].push({
                         x: x,
                         y: y,
@@ -103,12 +116,15 @@ export default function Home() {
                 ctxs[j].fillStyle = colors[j];
             }
             ctxImg.clearRect(0, 0, width, height);
-            update();
+            setLoading(false);
+            update(0);
         }
     },[maps]);
 
 
-    const update = () => {
+    const update = (time) => {
+        const dt = time - lastTime;
+        lastTime = time;
         const map = maps[counter.current % maps.length];
 
         for (let j = 0; j < 5; j++) {
@@ -127,21 +143,21 @@ export default function Home() {
                 const blueA = map[index + 2];
                 const angleX =  Math.round(redX / PI255);
                 const angleY = Math.round(greenY / PI255);
-                p.ax = pixelAcc * blueA * sinTable[angleX];
-                p.ay = pixelAcc * blueA * sinTable[angleY];
+                p.ax = pixelAccs[j] * blueA * sinTable[angleX];
+                p.ay = pixelAccs[j] * blueA * sinTable[angleY];
 
-                p.vx = p.vx + p.ax;
-                p.vy = p.vy + p.ay;
+                p.vx = p.vx + p.ax * dt;
+                p.vy = p.vy + p.ay * dt;
                 //update velocity without going over or below max velocity
-                if (p.vx > vMax) {
-                    p.vx = vMax;
-                } else if (p.vx < -vMax) {
-                    p.vx = -vMax;
+                if (p.vx > vMaxs[j]) {
+                    p.vx = vMaxs[j];
+                } else if (p.vx < -vMaxs[j]) {
+                    p.vx = -vMaxs[j];
                 }
-                if (p.vy > vMax) {
-                    p.vy = vMax;
-                } else if (p.vy < -vMax) {
-                    p.vy = -vMax;
+                if (p.vy > vMaxs[j]) {
+                    p.vy = vMaxs[j];
+                } else if (p.vy < -vMaxs[j]) {
+                    p.vy = -vMaxs[j];
                 }
 
                 // Update the position of the pixel based on the velocity
@@ -163,7 +179,7 @@ export default function Home() {
                     p.vy *= -1;
                 }
 
-                ctxs[j].fillRect(p.x, p.y, pixelSize, pixelSize);
+                ctxs[j].fillRect(p.x, p.y, pixelSizes[j], pixelSizes[j]);
             }
         }
 
@@ -181,11 +197,18 @@ export default function Home() {
     return (
         <div>
             <canvas ref={canvasImg} className={styles.backLayer}/>
-            <canvas ref={canvas1} className={styles.layer1}/>
-            <canvas ref={canvas2} className={styles.layer2}/>
-            <canvas ref={canvas3} className={styles.layer3}/>
-            <canvas ref={canvas4} className={styles.layer4}/>
-            <canvas ref={canvas5} className={styles.layer5}/>
+            <div className={styles.blob}/>
+            <div className={styles.blur}/>
+            <canvas ref={canvas1} className={styles.layer}/>
+            <canvas ref={canvas2} className={styles.layer}/>
+            <canvas ref={canvas3} className={styles.layer}/>
+            <canvas ref={canvas4} className={styles.layer}/>
+            <canvas ref={canvas5} className={styles.layer}/>
+            {loading ?
+                <div className={styles.loading}>LOADING</div>
+                :
+                <></>
+            }
         </div>
     )
 }

@@ -51,7 +51,8 @@ function combineMaps(image1, image2) {
 
 
 async function combineOnList() {
-    const mapNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+    //const mapNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+    const mapNames = ['a', 'ab', 'b', 'bc', 'c', 'cd', 'd', 'de', 'e', 'ef', 'f', 'fg', 'g', 'ga'];
     //const mapNames = ['1', '2', '3', '4'];
     const promises = mapNames.map((name, i) => combineMaps(name, mapNames[i < mapNames.length - 1 ? i + 1 : 0]));
     await Promise.all(promises);

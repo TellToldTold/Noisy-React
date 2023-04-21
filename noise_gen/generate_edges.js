@@ -3,10 +3,20 @@ import fs from 'fs';
 
 const width = 1798; // replace with your image width
 const height = 1019; // replace with your image height
+const dimMin = Math.min(width, height);
+const edge = dimMin / 12;
+const rad = Math.floor(dimMin / 5);
+const cent = rad + edge;
 
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext('2d');
 const imgData = ctx.createImageData(width, height);
+
+function calcEdgeValue(distEdge, origValue, increase) {
+    if (increase) {
+
+    }
+}
 
 function drawEdges(map) {
     loadImage('./rawMaps/' + map).then((mapImg) => {
@@ -14,10 +24,6 @@ function drawEdges(map) {
         ctx.drawImage(mapImg, 0, 0, width, height);
         const imageData = ctx.getImageData(0, 0, width, height);
 
-        const dimMin = Math.min(width, height);
-        const edge = dimMin / 12;
-        const rad = Math.floor(dimMin / 5);
-        const cent = rad + edge;
 
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
