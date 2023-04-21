@@ -43,7 +43,9 @@ export default function Home() {
         }
 
         async function loadMaps() {
-            const mapNames = ['map1.png', 'map12.png', 'map2.png', 'map23.png', 'map3.png', 'map34.png', 'map4.png', 'map41.png'];
+            //const mapNames = ['map1.png', 'map12.png', 'map2.png', 'map23.png', 'map3.png', 'map34.png', 'map4.png', 'map41.png'];
+            //const mapNames = ['1.png', '12.png', '2.png', '23.png', '3.png', '34.png', '4.png', '41.png'];
+            const mapNames = ['a.png', 'ab.png', 'b.png', 'bc.png', 'c.png', 'cd.png', 'd.png', 'de.png', 'e.png', 'ef.png', 'f.png', 'fg.png', 'g.png', 'ga.png'];
             const promises = mapNames.map(name => loadImage(`./noiseMaps/${name}`));
             await Promise.all(promises);
             setMaps(mps);
