@@ -4,12 +4,12 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, rgb(160, 210, 200) 0%, rgb(168, 215, 209) 46%, rgb(155, 199, 195) 100%);
+    background: linear-gradient(90deg, rgb(160, 210, 200) 0%, rgb(178, 225, 220) 46%, rgb(155, 199, 195) 100%);
 }
 
 .blob {
     background-color: white;
-    height: 60vw;
+    height: 65vw;
     aspect-ratio: 1;
     position: absolute;
     border-radius: 50%;
@@ -18,8 +18,23 @@
     translate: -50% -50%;
     background: #4c9d94;
     filter: blur(2px);
-    opacity: 0.65;
+    opacity: 0.7;
     animation: move-blob 2400s infinite, change-color 8s infinite;
+}
+
+.blobWhite {
+    background-color: white;
+    height: 25vw;
+    aspect-ratio: 1;
+    position: absolute;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    background: #d8fafa;
+    filter: blur(2px);
+    opacity: 0.7;
+    animation: move-blob-white 2200s infinite;
 }
 
 .blur {
@@ -27,7 +42,7 @@
     width: 100%;
     position: absolute;
     z-index: 0;
-    backdrop-filter: blur(12vmax);
+    backdrop-filter: blur(10vmax);
 }
 
 .layer {
@@ -62,73 +77,133 @@
         top: -10%;
         left: 50%;
     }
-    4% {
+    5% {
         top: -10%;
         left: -10%;
     }
-    8% {
+    10% {
         top: 80%;
         left: -20%;
     }
-    12% {
+    15% {
         top: 120%;
         left: 30%;
     }
-    16% {
+    20% {
         top: 140%;
         left: 60%;
     }
-    20% {
+    25% {
         top: -30%;
         left: 80%;
     }
-    24% {
+    30% {
         top: 100%;
         left: 100%;
     }
-    28% {
+    35% {
         top: -30%;
         left: 30%;
     }
-    32% {
+    40% {
         top: -40%;
         left: 120%;
     }
-    36% {
+    45% {
         top: 110%;
         left: 100%;
     }
-    40% {
+    50% {
         top: 100%;
         left: -20%;
     }
-    44% {
+    55% {
         top: -40%;
         left: -40%;
     }
-    48% {
+    60% {
         top: -10%;
         left: 40%;
     }
-    52% {
+    65% {
         top: 80%;
         left: 50%;
     }
-    56% {
+    70% {
         top: 50%;
         left: 70%;
     }
-    60% {
+    75% {
         top: -10%;
         left: 50%;
     }
-    64% {
+    80% {
         top: 30%;
         left: 10%;
+    }
+    85% {
+        top: -10%;
+        left: 50%;
+    }
+    90% {
+        top: 40%;
+        left: 40%;
+    }
+    95% {
+        top: 20%;
+        left: 90%;
     }
     100% {
         top: -10%;
         left: 50%;
+    }
+}
+
+
+@keyframes move-blob-white {
+    0% {
+        top: -5%;
+        left: 90%;
+    }
+    10% {
+        top: 120%;
+        left: 40%;
+    }
+    20% {
+        top: -20%;
+        left: 20%;
+    }
+    30% {
+        top: 80%;
+        left: -10%;
+    }
+    40% {
+        top: 10%;
+        left: 70%;
+    }
+    50% {
+        top: 70%;
+        left: 90%;
+    }
+    60% {
+        top: 50%;
+        left: 10%;
+    }
+    70% {
+        top: 70%;
+        left: 30%;
+    }
+    80% {
+        top: -50%;
+        left: -50%;
+    }
+    90% {
+        top: -50%;
+        left: -50%;
+    }
+    100% {
+        top: 110%;
+        left: -10%;
     }
 }
 

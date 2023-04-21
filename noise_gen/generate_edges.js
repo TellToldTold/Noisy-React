@@ -4,19 +4,17 @@ import fs from 'fs';
 const width = 1798; // replace with your image width
 const height = 1019; // replace with your image height
 const dimMin = Math.min(width, height);
+const maxVal = 255;
 const edge = dimMin / 12;
-const rad = Math.floor(dimMin / 5);
+const widthBand = width / 7;
+const heightBand = height / 5;
+const rad = Math.floor(dimMin / 6);
 const cent = rad + edge;
 
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext('2d');
 const imgData = ctx.createImageData(width, height);
 
-function calcEdgeValue(distEdge, origValue, increase) {
-    if (increase) {
-
-    }
-}
 
 function drawEdges(map) {
     loadImage('./rawMaps/' + map).then((mapImg) => {
@@ -38,6 +36,10 @@ function drawEdges(map) {
                 } else if (x > width - edge && y > cent && y < height - cent) {
                     r = Math.floor((r / edge) * (width - x));
                     b = Math.floor(b + ((255 - b) / edge) * (edge - (width - x)));
+                } else if (x > edge && x < widthBand) {
+                    r = Math.floor(Math.min(r + 25, maxVal));
+                } else if (x < width - edge && x > width - widthBand) {
+                    r = Math.floor(Math.max(r - 25, 0));
                 }
                 if (y < edge && x > cent && x < width - cent) {
                     g = Math.floor(g + ((255 - g) / edge) * (edge - y));
@@ -45,6 +47,10 @@ function drawEdges(map) {
                 } else if (y > height - edge && x > cent && x < width - cent) {
                     g = Math.floor((g / edge) * (height - y));
                     b = Math.floor(b + ((255 - b) / edge) * (edge - (height - y)));
+                } else if (y > edge && y < heightBand) {
+                    g = Math.floor(Math.min(g + 25, maxVal));
+                } else if (y < height - edge && y > height - heightBand) {
+                    g = Math.floor(Math.max(g - 25, 0));
                 }
 
                 const topLeft = Math.sqrt(Math.pow(x - cent, 2) + Math.pow(y -cent, 2));

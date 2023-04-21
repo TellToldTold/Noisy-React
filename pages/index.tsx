@@ -9,6 +9,9 @@ const vMaxs = [1.3, 1.35, 1.4, 1.45, 1.5];
 const pixelCounts = [3500,4000,2000,3500,5500];
 const colors = ['rgba(199,155,185,0.92)', 'rgba(220,180,215,0.91)', 'rgba(156,234,245,0.93)',
     'rgba(165,224,246,0.95)', 'rgb(161,233,255)'];
+const mapNames = ['a.png', 'aab.png', 'ab.png', 'abb.png', 'b.png', 'bbc.png', 'bc.png', 'bcc.png', 'c.png', 'ccd.png', 'cd.png', 'cdd.png', 'd.png',  'dde.png', 'de.png', 'dee.png', 'e.png', 'eef.png', 'ef.png', 'eff.png', 'f.png', 'ffg.png', 'fg.png', 'fgg.png', 'g.png', 'gga.png', 'ga.png', 'gaa.png'];
+//const mapNames = ['map1.png', 'map12.png', 'map2.png', 'map23.png', 'map3.png', 'map34.png', 'map4.png', 'map41.png'];
+//const mapNames = ['1.png', '12.png', '2.png', '23.png', '3.png', '34.png', '4.png', '41.png'];
 
 const PI255 = 0.8117;
 var width;
@@ -28,7 +31,7 @@ export default function Home() {
     const canvas3 = useRef(null);
     const canvas4 = useRef(null);
     const canvas5 = useRef(null);
-    const counter = useRef(0);
+    const counter = useRef(Math.floor(Math.random() * mapNames.length));
     const [maps, setMaps] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -75,9 +78,6 @@ export default function Home() {
         }
 
         async function loadMaps() {
-            //const mapNames = ['map1.png', 'map12.png', 'map2.png', 'map23.png', 'map3.png', 'map34.png', 'map4.png', 'map41.png'];
-            //const mapNames = ['1.png', '12.png', '2.png', '23.png', '3.png', '34.png', '4.png', '41.png'];
-            const mapNames = ['a.png', 'aab.png', 'ab.png', 'abb.png', 'b.png', 'bbc.png', 'bc.png', 'bcc.png', 'c.png', 'ccd.png', 'cd.png', 'cdd.png', 'd.png',  'dde.png', 'de.png', 'dee.png', 'e.png', 'eef.png', 'ef.png', 'eff.png', 'f.png', 'ffg.png', 'fg.png', 'fgg.png', 'g.png', 'gga.png', 'ga.png', 'gaa.png'];
             const promises = mapNames.map(name => loadImage(`./noiseMaps/${name}`));
             await Promise.all(promises);
             setMaps(mps);
@@ -198,6 +198,7 @@ export default function Home() {
         <div>
             <canvas ref={canvasImg} className={styles.backLayer}/>
             <div className={styles.blob}/>
+            <div className={styles.blobWhite}/>
             <div className={styles.blur}/>
             <canvas ref={canvas1} className={styles.layer}/>
             <canvas ref={canvas2} className={styles.layer}/>
