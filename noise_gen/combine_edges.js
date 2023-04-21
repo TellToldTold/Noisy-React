@@ -15,8 +15,8 @@ function drawEdges(map) {
         const imageData = ctx.getImageData(0, 0, width, height);
 
         const dimMin = Math.min(width, height);
-        const edge = dimMin / 8;
-        const rad = Math.floor(dimMin / 4.5);
+        const edge = dimMin / 12;
+        const rad = Math.floor(dimMin / 5);
         const cent = rad + edge;
 
         for (let x = 0; x < width; x++) {
