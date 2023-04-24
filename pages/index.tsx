@@ -6,7 +6,7 @@ const changeMapTimer = 700;
 const pixelSizes = [1.9, 1.925, 1.95, 1.975, 2];
 const pixelAccs = [0.000026, 0.000027, 0.000028, 0.000029, 0.00003];
 const vMaxs = [1.3, 1.35, 1.4, 1.45, 1.5];
-const pixelCounts = [3500,4000,2000,3500,5500];
+const pixelCounts = [4000,4500,2500,4000,6000];
 const colors = ['rgba(199,155,185,0.92)', 'rgba(220,180,215,0.91)', 'rgba(156,234,245,0.93)',
     'rgba(165,224,246,0.95)', 'rgb(161,233,255)'];
 const mapNames = ['a.png', 'aab.png', 'ab.png', 'abb.png', 'b.png', 'bbc.png', 'bc.png', 'bcc.png', 'c.png', 'ccd.png', 'cd.png', 'cdd.png', 'd.png',  'dde.png', 'de.png', 'dee.png', 'e.png', 'eef.png', 'ef.png', 'eff.png', 'f.png', 'ffg.png', 'fg.png', 'fgg.png', 'g.png', 'gga.png', 'ga.png', 'gaa.png'];
@@ -35,7 +35,7 @@ export default function Home() {
     const [maps, setMaps] = useState([]);
     const [loading, setLoading] = useState(true);
 
-
+    // initialize the canvases and load the noise maps
     useEffect(() => {
         for (let angle = -Math.PI / 2; angle <= Math.PI / 2; angle += 0.01) {
             sinTable.push(Math.sin(angle));
@@ -84,9 +84,9 @@ export default function Home() {
         }
 
         loadMaps();
-
     },[]);
 
+    // initialize the pixels and start the animation
     useEffect(() => {
         if (maps.length !== 0) {
             ctxs.push(canvas1.current.getContext('2d'));
@@ -121,7 +121,16 @@ export default function Home() {
         }
     },[maps]);
 
+    // change the noise map every changeMapTimer ms
+    useEffect(() => {
+        const interval = setInterval(() => {
+            counter.current = counter.current + 1;
+        }, changeMapTimer);
 
+        return () => clearInterval(interval);
+    }, [maps]);
+
+    // update the position of the pixels
     const update = (time) => {
         const dt = time - lastTime;
         lastTime = time;
@@ -185,14 +194,6 @@ export default function Home() {
 
         requestAnimationFrame(update);
     }
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            counter.current = counter.current + 1;
-        }, changeMapTimer);
-
-        return () => clearInterval(interval);
-    }, [maps]);
 
     return (
         <div>
