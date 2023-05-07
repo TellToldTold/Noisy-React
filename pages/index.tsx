@@ -2,13 +2,15 @@ import styles from '@/styles/Home.module.css'
 import {useEffect, useRef, useState} from "react";
 
 const genRadius = 0.25;         // fraction of the screen minimum Dimension where the particles are generated
-const changeMapTimer = 700;
+const changeMapTimer = 600;
 const pixelSizes = [1.9, 1.925, 1.95, 1.975, 2];
 const pixelAccs = [0.000026, 0.000027, 0.000028, 0.000029, 0.00003];
 const vMaxs = [1.3, 1.35, 1.4, 1.45, 1.5];
-const pixelCounts = [4000,4500,2500,4000,6000];
-const colors = ['rgba(199,155,185,0.92)', 'rgba(220,180,215,0.91)', 'rgba(156,234,245,0.93)',
-    'rgba(165,224,246,0.95)', 'rgb(161,233,255)'];
+const pixelCounts = [4000,4500,3000,4000,5000];
+//const colors = ['rgba(199,155,185,0.92)', 'rgba(220,180,215,0.91)', 'rgba(156,234,245,0.93)',
+ //   'rgba(165,224,246,0.95)', 'rgb(161,233,255)'];
+const colors = ['rgba(220,155,115,0.89)', 'rgba(218,175,121,0.89)', 'rgba(205,213,145,0.96)',
+    'rgba(165,238,179,0.89)', 'rgba(149,238,207,0.91)'];
 const mapNames = ['a.png', 'aab.png', 'ab.png', 'abb.png', 'b.png', 'bbc.png', 'bc.png', 'bcc.png', 'c.png', 'ccd.png', 'cd.png', 'cdd.png', 'd.png',  'dde.png', 'de.png', 'dee.png', 'e.png', 'eef.png', 'ef.png', 'eff.png', 'f.png', 'ffg.png', 'fg.png', 'fgg.png', 'g.png', 'gga.png', 'ga.png', 'gaa.png'];
 //const mapNames = ['map1.png', 'map12.png', 'map2.png', 'map23.png', 'map3.png', 'map34.png', 'map4.png', 'map41.png'];
 //const mapNames = ['1.png', '12.png', '2.png', '23.png', '3.png', '34.png', '4.png', '41.png'];
@@ -31,6 +33,7 @@ export default function Home() {
     const canvas3 = useRef(null);
     const canvas4 = useRef(null);
     const canvas5 = useRef(null);
+    const loadingOverlay = useRef(null);
     const counter = useRef(Math.floor(Math.random() * mapNames.length));
     const [maps, setMaps] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -116,7 +119,12 @@ export default function Home() {
                 ctxs[j].fillStyle = colors[j];
             }
             ctxImg.clearRect(0, 0, width, height);
-            setLoading(false);
+            loadingOverlay.current.animate(
+                {
+                    opacity: [1, 0],
+                },
+                { duration: 350, fill: 'forwards' }
+            );
             update(0);
         }
     },[maps]);
@@ -206,11 +214,12 @@ export default function Home() {
             <canvas ref={canvas3} className={styles.layer}/>
             <canvas ref={canvas4} className={styles.layer}/>
             <canvas ref={canvas5} className={styles.layer}/>
-            {loading ?
-                <div className={styles.loading}>LOADING</div>
-                :
-                <></>
-            }
+
+            <div className={styles.home}>
+                <text className={styles.title}>Francesco Baldini</text>
+            </div>
+
+            <div ref={loadingOverlay} className={styles.loading }>LOADING</div>
         </div>
     )
 }
