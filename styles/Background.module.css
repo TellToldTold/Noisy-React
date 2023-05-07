@@ -1,0 +1,250 @@
+.backLayer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgb(172, 222, 219) 0%, rgb(116, 190, 187) 46%, rgb(142, 204, 201) 100%);
+}
+
+.blob {
+    height: 65vw;
+    aspect-ratio: 1;
+    position: fixed;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    background: #34837f;
+    filter: blur(2px);
+    opacity: 0.75;
+    animation: move-blob 2400s infinite, change-color 8s infinite;
+}
+
+.blobWhite {
+    height: 20vw;
+    aspect-ratio: 1;
+    position: fixed;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    background: #dff1f1;
+    filter: blur(2px);
+    opacity: 0.8;
+    animation: move-blob-white 2200s infinite;
+}
+
+.blur {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 0;
+    backdrop-filter: blur(10vmax);
+}
+
+.layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+.loading {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #34837F;
+    font-size: 1.5rem;
+    color: #CDEBEA;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.5s ease-out;
+    z-index: 999;
+}
+
+.home {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.title {
+    color: rgba(144, 255, 220, 0.8);
+    font-size: 75px;
+    font-weight: 600;
+    text-shadow: 1.5px 1.5px 3px rgba(43, 91, 105, 0.30);
+    animation: color-title 240s infinite;
+}
+
+@keyframes move-blob {
+    0% {
+        top: -10%;
+        left: 50%;
+    }
+    5% {
+        top: -10%;
+        left: -10%;
+    }
+    10% {
+        top: 80%;
+        left: -20%;
+    }
+    15% {
+        top: 120%;
+        left: 30%;
+    }
+    20% {
+        top: 140%;
+        left: 60%;
+    }
+    25% {
+        top: -30%;
+        left: 80%;
+    }
+    30% {
+        top: 100%;
+        left: 100%;
+    }
+    35% {
+        top: -30%;
+        left: 30%;
+    }
+    40% {
+        top: -40%;
+        left: 120%;
+    }
+    45% {
+        top: 110%;
+        left: 100%;
+    }
+    50% {
+        top: 100%;
+        left: -20%;
+    }
+    55% {
+        top: -40%;
+        left: -40%;
+    }
+    60% {
+        top: -10%;
+        left: 40%;
+    }
+    65% {
+        top: 80%;
+        left: 50%;
+    }
+    70% {
+        top: 50%;
+        left: 70%;
+    }
+    75% {
+        top: -10%;
+        left: 50%;
+    }
+    80% {
+        top: 30%;
+        left: 10%;
+    }
+    85% {
+        top: -10%;
+        left: 50%;
+    }
+    90% {
+        top: 40%;
+        left: 40%;
+    }
+    95% {
+        top: 20%;
+        left: 90%;
+    }
+    100% {
+        top: -10%;
+        left: 50%;
+    }
+}
+
+
+@keyframes move-blob-white {
+    0% {
+        top: 90%;
+        left: 90%;
+    }
+    10% {
+        top: 120%;
+        left: 40%;
+    }
+    20% {
+        top: -20%;
+        left: 20%;
+    }
+    30% {
+        top: 80%;
+        left: -10%;
+    }
+    40% {
+        top: 10%;
+        left: 70%;
+    }
+    50% {
+        top: 70%;
+        left: 90%;
+    }
+    60% {
+        top: 50%;
+        left: 10%;
+    }
+    70% {
+        top: 70%;
+        left: 30%;
+    }
+    80% {
+        top: -50%;
+        left: -50%;
+    }
+    90% {
+        top: -50%;
+        left: -50%;
+    }
+    100% {
+        top: 110%;
+        left: -10%;
+    }
+}
+
+
+@keyframes change-color {
+    0% {
+        background-color: #4C9D94FF;
+    }
+    50% {
+        background-color: #6ab4af;
+    }
+    100% {
+        background-color: #4C9D94FF;
+    }
+}
+
+@keyframes color-title {
+    0% {
+        color: rgba(144, 255, 220, 0.85);
+    }
+    50% {
+        color: rgba(141, 228, 255, 0.85);
+    }
+    100% {
+        color: rgba(144, 255, 220, 0.85);
+    }
+}
