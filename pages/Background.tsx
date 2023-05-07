@@ -2,20 +2,22 @@ import styles from '@/styles/Background.module.css'
 import {ReactNode, useEffect, useRef, useState} from "react";
 
 const genRadius = 0.25;         // fraction of the screen minimum Dimension where the particles are generated
-const changeMapTimer = 600;
-const mouseRadius = 60;
-const MaxAcc = 0.02;
+const changeMapTimer = 750;
 const pixelSizes = [1.9, 1.925, 1.95, 1.975, 2];
 const pixelAccs = [0.000026, 0.000027, 0.000028, 0.000029, 0.00003];
-const vMaxs = [1.3, 1.35, 1.4, 1.45, 1.5];
+const vMaxs = [1.32, 1.37, 1.425, 1.48, 1.53];
 const pixelCounts = [4000,4500,3000,4000,5000];
 //const colors = ['rgba(199,155,185,0.92)', 'rgba(220,180,215,0.91)', 'rgba(156,234,245,0.93)',
 //   'rgba(165,224,246,0.95)', 'rgb(161,233,255)'];
-const colors = ['rgba(220,155,115,0.89)', 'rgba(218,175,121,0.89)', 'rgba(205,213,145,0.96)',
-    'rgba(165,238,179,0.89)', 'rgba(149,238,207,0.91)'];
-const mapNames = ['a.png', 'aab.png', 'ab.png', 'abb.png', 'b.png', 'bbc.png', 'bc.png', 'bcc.png', 'c.png', 'ccd.png', 'cd.png', 'cdd.png', 'd.png',  'dde.png', 'de.png', 'dee.png', 'e.png', 'eef.png', 'ef.png', 'eff.png', 'f.png', 'ffg.png', 'fg.png', 'fgg.png', 'g.png', 'gga.png', 'ga.png', 'gaa.png'];
-//const mapNames = ['map1.png', 'map12.png', 'map2.png', 'map23.png', 'map3.png', 'map34.png', 'map4.png', 'map41.png'];
-//const mapNames = ['1.png', '12.png', '2.png', '23.png', '3.png', '34.png', '4.png', '41.png'];
+const colors = ['rgba(220,155,115,0.85)', 'rgba(218,175,121,0.85)', 'rgba(205,213,145,0.92)',
+    'rgba(165,238,179,0.85)', 'rgba(149,238,207,0.86)'];
+const mapNames = [  {name: 'a', trans: [ ['a.png', 'aab.png', 'ab.png', 'abb.png'], ['a.png', 'aac.png', 'ac.png', 'acc.png'] ]},
+                    {name: 'b', trans: [ ['b.png', 'bbc.png', 'bc.png', 'bcc.png'], ['b.png', 'bbf.png', 'bf.png', 'bff.png']]},
+                    {name: 'c', trans: [ ['c.png', 'ccd.png', 'cd.png', 'cdd.png'], ['c.png', 'ccb.png', 'cb.png', 'cbb.png']]},
+                    {name: 'd', trans: [ ['d.png', 'dde.png', 'de.png', 'dee.png'], ['d.png', 'dda.png', 'da.png', 'daa.png']]},
+                    {name: 'e', trans: [ ['e.png', 'eef.png', 'ef.png', 'eff.png'], ['e.png', 'eeg.png', 'eg.png', 'egg.png']]},
+                    {name: 'f', trans: [ ['f.png', 'ffg.png', 'fg.png', 'fgg.png'], ['f.png', 'ffe.png', 'fe.png', 'fee.png']]},
+                    {name: 'g', trans: [ ['g.png', 'gga.png', 'ga.png', 'gaa.png'], ['g.png', 'ggd.png', 'gd.png', 'gdd.png']]}];
 
 const PI255 = 0.8117;
 var width;
@@ -36,13 +38,43 @@ const Background = ( { children }: { children: ReactNode }) => {
     const canvas4 = useRef(null);
     const canvas5 = useRef(null);
     const loadingOverlay = useRef(null);
-    const counter = useRef(Math.floor(Math.random() * mapNames.length));
-    const [maps, setMaps] = useState([]);
+    const currentLetter = useRef('a');
+    const currentSequence = useRef(Math.round(Math.random() * (mapNames[0].trans.length - 1)));
+    const transIndex = useRef(0);
+    const [nLoaded, setNLoaded] = useState(0);
+    const [maps, setMaps] = useState({a: [[],[]], b: [[],[]], c: [[],[]], d: [[],[]], e: [[],[]], f: [[],[]], g: [[],[]]});
 
     // initialize the canvases and load the noise maps
     useEffect(() => {
-        for (let angle = -Math.PI / 2; angle <= Math.PI / 2; angle += 0.01) {
-            sinTable.push(Math.sin(angle));
+        let mps = {a: [[],[]], b: [[],[]], c: [[],[]], d: [[],[]], e: [[],[]], f: [[],[]], g: [[],[]]};
+        var loaded = 0;
+
+        const loadImage = (name, letter, ind) => {
+            return new Promise((resolve, reject) => {
+                const mapImg = new Image();
+                mapImg.src = `./noiseMaps/${name}`;
+                mapImg.onload = () => {
+                    loaded += 1;
+                    setNLoaded(loaded);
+                    ctxImg.clearRect(0, 0, width, height);
+                    ctxImg.drawImage(mapImg, 0, 0, width, height);
+
+                    // Read the color values of each pixel in the map image
+                    const imageData = ctxImg.getImageData(0, 0, width, height);
+                    mps[letter][ind].push(imageData.data);
+                    resolve();
+                }
+            });
+        }
+
+        async function loadMaps() {
+            const promises = [];
+            mapNames.forEach(map => {
+                map.trans.forEach((list, ind) => {
+                    list.forEach(name => promises.push(loadImage(name, map.name, ind)));
+                });
+            });
+            await Promise.all(promises);
         }
 
         ctxImg = canvasImg.current.getContext('2d');
@@ -63,37 +95,20 @@ const Background = ( { children }: { children: ReactNode }) => {
         canvas5.current.width = width;
         canvas5.current.height = height;
 
-        let mps = [];
-
-        const loadImage = (src) => {
-            return new Promise((resolve, reject) => {
-                const mapImg = new Image();
-                mapImg.src = src;
-                mapImg.onload = () => {
-                    ctxImg.clearRect(0, 0, width, height);
-                    ctxImg.drawImage(mapImg, 0, 0, width, height);
-
-                    // Read the color values of each pixel in the map image
-                    const imageData = ctxImg.getImageData(0, 0, width, height);
-                    mps.push(imageData.data);
-                    resolve();
-                }
-            });
+        for (let angle = -Math.PI / 2; angle <= Math.PI / 2; angle += 0.01) {
+            sinTable.push(Math.sin(angle));
         }
 
-        async function loadMaps() {
-            const promises = mapNames.map(name => loadImage(`./noiseMaps/${name}`));
-            await Promise.all(promises);
-            setMaps(mps);
-        }
-
-        loadMaps();
-
+        loadMaps().then(() => {
+                console.log('done loading');
+                setMaps(mps);
+            }
+        );
     },[]);
 
     // initialize the pixels and start the animation
     useEffect(() => {
-        if (maps.length !== 0) {
+        if (maps['a'][0].length > 0) {
             ctxs.push(canvas1.current.getContext('2d'));
             ctxs.push(canvas2.current.getContext('2d'));
             ctxs.push(canvas3.current.getContext('2d'));
@@ -134,17 +149,24 @@ const Background = ( { children }: { children: ReactNode }) => {
     // change the noise map every changeMapTimer ms
     useEffect(() => {
         const interval = setInterval(() => {
-            counter.current = counter.current + 1;
+            if (transIndex.current == 3) {
+                currentLetter.current = mapNames.find(m => m.name == currentLetter.current).trans[currentSequence.current][transIndex.current][2];
+                transIndex.current = 0;
+                currentSequence.current = Math.round(Math.random()  * (mapNames[0].trans.length - 1));
+            } else {
+                transIndex.current = transIndex.current + 1;
+            }
         }, changeMapTimer);
 
         return () => clearInterval(interval);
+
     }, [maps]);
 
     // update the position of the pixels
     const update = (time) => {
         const dt = time - lastTime;
         lastTime = time;
-        const map = maps[counter.current % maps.length];
+        const map = maps[currentLetter.current][currentSequence.current][transIndex.current];
 
         for (let j = 0; j < 5; j++) {
             ctxs[j].clearRect(0, 0, width, height);
@@ -197,7 +219,6 @@ const Background = ( { children }: { children: ReactNode }) => {
                     p.y = 0;
                     p.vy *= -1;
                 }
-
                 ctxs[j].fillRect(p.x, p.y, pixelSizes[j], pixelSizes[j]);
             }
         }
@@ -219,7 +240,12 @@ const Background = ( { children }: { children: ReactNode }) => {
 
             {children}
 
-            <div ref={loadingOverlay} className={styles.loading }>LOADING</div>
+            <div ref={loadingOverlay} className={styles.loading }>
+                LOADING
+                <div className={styles.loadingBarContainer}>
+                    <div className={styles.loadingBar} style={{width:`${nLoaded * 1.8}px`}}/>
+                </div>
+            </div>
         </div>
     )
 }

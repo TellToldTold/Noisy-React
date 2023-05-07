@@ -41,7 +41,7 @@ a {
 
 @font-face {
   font-family: 'Outfit';
-  src: url('/fonts/RobotoMono-Medium.ttf') format('truetype');
+  src: url('/fonts/RobotoMono-Regular.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
 }

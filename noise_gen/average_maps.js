@@ -7,10 +7,12 @@ const height = 1019; // replace with your image height
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext('2d');
 const imgData = ctx.createImageData(width, height);
+var combinedStr = 'Combined images:';
+
 
 function combineMaps(image1, image2) {
     const image12 = image1 + image2;
-    console.log("Combining images: " + image1 + " and " + image2 + " ----> " + image12);
+    combinedStr +=", \'" + image1 + ".png\', \'" + image12 + ".png\'";
     loadImage('../public/noiseMaps/' + image1 + '.png').then((mapImg) => {
 
         ctx.clearRect(0, 0, width, height);
@@ -51,11 +53,14 @@ function combineMaps(image1, image2) {
 
 
 async function combineOnList() {
-    //const mapNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
-    const mapNames = ['a', 'ab', 'b', 'bc', 'c', 'cd', 'd', 'de', 'e', 'ef', 'f', 'fg', 'g', 'ga'];
+    //const mapNames = ['a', 'c', 'b', 'f', 'e', 'g', 'd'];
+    const mapNames = ['a', 'ac', 'c', 'cb', 'b', 'bf', 'f', 'fe', 'e', 'eg', 'g', 'gd', 'd', 'da'];
     //const mapNames = ['1', '2', '3', '4'];
     const promises = mapNames.map((name, i) => combineMaps(name, mapNames[i < mapNames.length - 1 ? i + 1 : 0]));
     await Promise.all(promises);
 }
 
-combineOnList();
+combineOnList().then(() => {
+    console.log(combinedStr);
+    }
+);

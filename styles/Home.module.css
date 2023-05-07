@@ -27,7 +27,7 @@
 }
 
 .scrollText {
-    margin-top: 93vh;
+    margin-top: 93.5vh;
     color: rgba(190, 250, 230, 0.9);
     font-size: 17px;
     font-weight: 400;
@@ -37,12 +37,13 @@
 
 .scrollArrow {
     background: rgba(190, 250, 230, 0.9);
-    height:25px;
+    height:20px;
     width: 60px;
     clip-path: polygon(0 0, 50% 100%, 100% 0, 97% 0, 50% 95%, 3% 0);
     animation: arrow-bounce 13s infinite ease-in-out;
     margin-bottom: 5px;
 }
+
 
 @keyframes color-title {
     0% {
@@ -60,17 +61,26 @@
     0% {
         transform: translateY(0);
     }
+    20% {
+        transform: translateY(3px);
+    }
+    40% {
+        transform: translateY(0);
+    }
+    60% {
+        transform: translateY(3px);
+    }
     80% {
         transform: translateY(0);
     }
     85% {
-        transform: translateY(5px);
+        transform: translateY(4px);
     }
     90% {
         transform: translateY(0);
     }
     95% {
-        transform: translateY(5px);
+        transform: translateY(4px);
     }
     100% {
         transform: translateY(0);
